@@ -1,0 +1,23 @@
+name: Build Docker Container after Django Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test_django:
+    uses: nonam3e/boardproject/.github/workflows/django-test.yml@master
+  container_builder:
+    runs-on: ubuntu-latest
+    needs: [test_django]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build container image
+        run: |
+          docker build \
+          -t your-username/your-image-name:${GITHUB_SHA::7} \
+          -t your-username/your-image-name:latest \
+          .
