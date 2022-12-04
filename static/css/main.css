@@ -1,0 +1,32 @@
+html,body {
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 
+form {
+    width: 40%;
+    margin: 0 auto;
+} */
+
+.navbar {
+    background-color: #0d6c66;
+}
+
+.navbar li a {
+    font-size: 20px;
+}
+
+.navbar-brand {
+    font-size: 30px !important;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: #0d6c66 !important;
+}
+
+@media(max-width: 767px){
+    form { 
+        width: 90%;
+    }
+}

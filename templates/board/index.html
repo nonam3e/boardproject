@@ -1,0 +1,97 @@
+{% extends 'board/base.html'%}
+{% load crispy_forms_tags%} 
+{% block content%}
+
+<br></br>
+{% if user.is_authenticated%}
+<div class = "container">
+  <h1 class= "text-center ">ITEMS</h1>
+  <br>
+
+  <div class = "container">
+    <form action = "" method = "GET">
+        {{item_filters.form.as_p}}
+        <input 
+        type = "submit"
+        value = "Search Products"
+        class="btn btn-secondary btn"/>
+    </form>
+  </div>
+
+  <br>
+  <table class="table table-striped table-hover text-center">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Category</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Last Modified</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td scope="row">{{forloop.counter}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.category_name}}</td>
+        <td>{{item.amount}}</td>
+        <td>{{item.last_changed}}</td>
+        <td>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItem{{item.id}}">
+            ADD ITEM
+          </button>
+          <div class="modal fade" id="addItem{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="addItem" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add item</h5>
+                  <button type="button id" class="btn-close" data-dismiss="modal" aria-label="Close">
+                  </button>
+                </div>
+                <form method="post" action="/add_to_stock/{{item.id}}">
+                <div class="modal-body">
+                  {% csrf_token %} 
+                  {{addform | crispy}}
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">SAVE</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removePopup{{item.id}}">
+            REMOVE
+          </button>
+          <div class="modal fade" id="removePopup{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="removePopupLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Remove Item</h5>
+                  <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                  </button>
+                </div>
+                <form method="post" action="/remove_from_stock/{{item.id}}">
+                  <div class="modal-body">
+                    {% csrf_token %} 
+                    {{removeform | crispy}}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">REMOVE</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endif %}
+{% endblock%}

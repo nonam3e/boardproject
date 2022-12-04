@@ -1,0 +1,45 @@
+{% extends 'board/base.html'%}
+{% load crispy_forms_tags%} 
+{% block content%}
+
+<br></br>
+{% if user.is_authenticated%}
+<div class = "container">
+  <h1 class= "text-center ">CHANGES</h1>
+  <br>
+
+  <br>
+  <table class="table table-striped table-hover text-center">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Type</th>
+        <th scope="col">Action</th>
+        <th scope="col">User</th>
+        <th scope="col">TimeStamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      {%if item.action_flag == 1%}
+        <tr class="table-success">
+      {%elif item.action_flag == 2%}
+        <tr class="table-warning">
+      {%else%}
+        <tr class="table-danger">
+        {%endif%}
+          <td scope="row">{{forloop.counter}}</td>
+          <td>{{item.object_repr}}</td>
+          <td>{{item.content_type}}</td>
+          <td>{{item.change_message}}</td>
+          <td>{{item.user}}</td>
+          <td>{{item.action_time}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endif %}
+{% endblock%}
