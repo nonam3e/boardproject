@@ -1,5 +1,6 @@
 {% extends 'board/base.html'%}
 {% load crispy_forms_tags%} 
+{% crispy item_update_form item_update_form.helper %}
 {% block content%}
 
 <br></br>
@@ -10,12 +11,41 @@
 
   <div class = "container">
     <form action = "" method = "GET">
+        {% csrf_token %}
         {{item_filters.form.as_p}}
         <input 
         type = "submit"
         value = "Search Products"
         class="btn btn-secondary btn"/>
     </form>
+      <div class="col">
+        <div class="text-end">
+          <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#newItem">
+            New Item
+          </button>
+        </div>
+      </div>
+  
+  </div>
+  <div class="modal fade" id="newItem" tabindex="-1" role="dialog" aria-labelledby="newItem" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New item</h5>
+          <button type="button id" class="btn-close" data-dismiss="modal" aria-label="Close">
+          </button>
+        </div>
+        <form method="post" action="/new_item">
+        <div class="modal-body">
+          {% csrf_token %} 
+          {{newform | crispy}}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">SAVE</button>
+        </div>
+      </form>
+      </div>
+    </div>
   </div>
 
   <br>
@@ -25,9 +55,10 @@
         <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Category</th>
+        <th scope="col" style="width:5%"></th>
         <th scope="col">Quantity</th>
+        <th scope="col"style="width:20%"></th>
         <th scope="col">Last Modified</th>
-        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
@@ -35,9 +66,35 @@
       <tr>
         <td scope="row">{{forloop.counter}}</td>
         <td>{{item.name}}</td>
-        <td>{{item.category_name}}</td>
+        <td>
+          {{item.category_name}}
+        </td>
+        <td>
+          <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#changeCategory{{item.id}}">
+            Replace
+          </button>
+          <div class="modal fade" id="changeCategory{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="changeCategory" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Replace</h5>
+                  <button type="button id" class="btn-close" data-dismiss="modal" aria-label="Close">
+                  </button>
+                </div>
+                <form method="post" action="/change_category/{{item.id}}">
+                <div class="modal-body">
+                  {% csrf_token %} 
+                  {{categoryform | crispy}}
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">SAVE</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+        </td>
         <td>{{item.amount}}</td>
-        <td>{{item.last_changed}}</td>
         <td>
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItem{{item.id}}">
             ADD ITEM
@@ -85,8 +142,8 @@
               </div>
             </div>
           </div>
-          
         </td>
+        <td>{{item.last_changed}}</td>
       </tr>
       {% endfor %}
     </tbody>

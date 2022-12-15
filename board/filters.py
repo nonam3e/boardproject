@@ -5,6 +5,14 @@ from board.models import Item, Category
 class ItemFilter(django_filters.FilterSet):
     amount = django_filters.RangeFilter()
     last_changed = django_filters.DateTimeFromToRangeFilter()
+    o = django_filters.OrderingFilter(
+    fields= ['name', 'category_name', 'amount', 'last_changed'],
+    field_labels={
+            'category_name': 'Category',
+            'amount': 'Quantity',
+            'last_changed': 'Last Modified',
+        }
+)
     # amount__gt = django_filters.NumberFilter(field_name='amount', lookup_expr='gt')
     # amount__lt = django_filters.NumberFilter(field_name='amount', lookup_expr='lt')
     # changed_date = django_filters.NumberFilter(field_name='last_changed', lookup_expr='date')

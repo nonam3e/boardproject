@@ -24,8 +24,8 @@ class Category(models.Model):
         return self.name
 
 class Item(models.Model):
-    category_name = models.ForeignKey(Category, on_delete = models.SET_NULL, null = True, blank = True )
-    name = models.CharField(max_length = 150)
+    category_name = models.ForeignKey(Category, on_delete = models.SET_DEFAULT, default=1)
+    name = models.CharField(max_length = 150, unique=True)
     amount = models.PositiveIntegerField(default=0)
     last_changed = models.DateTimeField(auto_now=True)
     

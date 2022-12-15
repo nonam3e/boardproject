@@ -20,7 +20,8 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+SESSION_COOKIE_AGE = 300 # 3 minutes. "1209600(2 weeks)" by default 
+SESSION_SAVE_EVERY_REQUEST = True
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -118,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = env("TIME_ZONE", default="Etc/GMT+7")
+TIME_ZONE = env("TIME_ZONE", default='Etc/GMT-7')
 
 USE_I18N = True
 
@@ -137,7 +138,7 @@ STATICFILES_DIR = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = ''
 LOGIN_URL = 'login'
 
 # Default primary key field type
