@@ -58,7 +58,7 @@ jobs:
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v1.3
       with:
-        envkey_SECRET_KEY: NOT_SECRET_AT_ALL
+        envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
         envkey_DATABASE_NAME: boardproject
         envkey_DATABASE_USER: boardadmin
         envkey_DATABASE_PASSWORD: password
@@ -69,6 +69,8 @@ jobs:
         envkey_DJANGO_SUPERUSER_PASSWORD: admin
         envkey_DJANGO_SUPERUSER_EMAIL: example@example.com
         envkey_DJANGO_SUPERUSER_USERNAME: admin
+        directory: ./
+        file_name: .env
   create-envfile-postgres:
     runs-on: ubuntu-latest
     steps:
@@ -78,6 +80,7 @@ jobs:
         envkey_POSTGRES_USER: boardadmin
         envkey_POSTGRES_PASSWORD: password
         envkey_POSTGRES_DB: boardproject
+        directory: ./
         file_name: .env.db
 
   compose:
