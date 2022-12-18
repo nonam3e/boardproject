@@ -1,6 +1,8 @@
 # pull official base image
 FROM python:3.10-alpine
 
+LABEL name="BoardService"
+
 # set work directory
 WORKDIR /usr/src/app
 
