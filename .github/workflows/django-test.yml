@@ -69,8 +69,7 @@ jobs:
         envkey_DJANGO_SUPERUSER_PASSWORD: admin
         envkey_DJANGO_SUPERUSER_EMAIL: example@example.com
         envkey_DJANGO_SUPERUSER_USERNAME: admin
-        directory: ../../
-        file_name: .env
+        directory: ./
   create-envfile-postgres:
     runs-on: ubuntu-latest
     steps:
@@ -80,7 +79,7 @@ jobs:
         envkey_POSTGRES_USER: boardadmin
         envkey_POSTGRES_PASSWORD: password
         envkey_POSTGRES_DB: boardproject
-        directory: ../../
+        directory: ./
         file_name: .env.db
 
   compose:
