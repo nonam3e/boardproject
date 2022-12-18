@@ -59,7 +59,8 @@ jobs:
       uses: SpicyPizza/create-envfile@v1.3
       with:
         envkey_SECRET_KEY: NOT_SECRET_AT_ALL
-        envkey_DATABASE_NAME: boardprojectDATABASE_USER: boardadmin
+        envkey_DATABASE_NAME: boardproject
+        envkey_DATABASE_USER: boardadmin
         envkey_DATABASE_PASSWORD: password
         envkey_DATABASE_HOST: db
         envkey_DATABASE_PORT: 5432
@@ -78,6 +79,7 @@ jobs:
         envkey_POSTGRES_PASSWORD: password
         envkey_POSTGRES_DB: boardproject
         file_name: .env.db
+        
   compose:
     runs-on: ubuntu-latest
     steps:
