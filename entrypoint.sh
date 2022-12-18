@@ -25,4 +25,6 @@ then
         --email $DJANGO_SUPERUSER_EMAIL
 fi
 
+python manage.py loaddata /usr/src/app/board/register.json
+
 exec "$@"
