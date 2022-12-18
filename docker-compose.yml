@@ -9,7 +9,7 @@ services:
     ports:
       - 8000:8000
     env_file:
-      - ./github/workspace/.env
+      - ./.env
     depends_on:
       - db
   db:
@@ -17,7 +17,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./github/workspace/.env.db
+      - ./.env.db
 
 volumes:
   postgres_data:
