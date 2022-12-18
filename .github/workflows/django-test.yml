@@ -52,6 +52,11 @@ jobs:
         run: python manage.py migrate
       - name: Run Test # running tests
         run: python manage.py test
+      - name: publish
+        uses: pennsignals/publish_docker-compose@v0.1.0
+        with:
+          docker_compose: 'docker-compose.yml' # required
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
   # create-envfile:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -81,9 +86,3 @@ jobs:
   #       envkey_POSTGRES_DB: boardproject
   #       directory: ./
   #       file_name: .env.db
-
-  - name: publish
-    uses: pennsignals/publish_docker-compose@v0.1.0
-    with:
-      docker_compose: 'docker-compose.yml' # required
-      repo_token: "${{ secrets.GITHUB_TOKEN }}"
