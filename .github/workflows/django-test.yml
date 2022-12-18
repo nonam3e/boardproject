@@ -52,3 +52,36 @@ jobs:
         run: python manage.py migrate
       - name: Run Test # running tests
         run: python manage.py test
+  create-envfile:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v1.3
+      with:
+        envkey_SECRET_KEY: NOT_SECRET_AT_ALL
+        envkey_DATABASE_NAME: boardprojectDATABASE_USER: boardadmin
+        envkey_DATABASE_PASSWORD: password
+        envkey_DATABASE_HOST: db
+        envkey_DATABASE_PORT: 5432
+        envkey_ALLOWED_HOSTS: 127.0.0.1
+        envkey_DATABASE: postgres
+        envkey_DJANGO_SUPERUSER_PASSWORD: admin
+        envkey_DJANGO_SUPERUSER_EMAIL: example@example.com
+        envkey_DJANGO_SUPERUSER_USERNAME: admin
+  create-envfile-postgres:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Make envfile for postgres
+      uses: SpicyPizza/create-envfile@v1.3
+      with:
+        envkey_POSTGRES_USER: boardadmin
+        envkey_POSTGRES_PASSWORD: password
+        envkey_POSTGRES_DB: boardproject
+        file_name: .env.db
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: isbang/compose-action@v1.4.1
+    with:
+      compose-file: "./docker-compose.yml"
