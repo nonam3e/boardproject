@@ -84,18 +84,58 @@ def new_item(request):
             issued_category = Category.objects.get(id = request.POST["category_name"])
             issued_item = Item.objects.create(name = request.POST["name"], category_name = issued_category, amount = request.POST["amount"], last_changer = request.user)
             issued_item.save(update_fields=[])
+            LogEntry.objects.log_action(
+                        user_id=issued_item.last_changer.id,
+                        content_type_id=ContentType.objects.get_for_model(Item).pk,
+                        object_id=issued_item.id,
+                        object_repr=issued_item.name,
+                        action_flag=ADDITION,
+                        change_message=f"new item amount {issued_item.amount} placed in {issued_item.category_name}")
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
 def change_category(request, pk):
-    issued_item = Item.objects.get(id = pk)
-    form = ChangeCategoryForm(request.POST)
-
     if request.method == 'POST':
         print(request.POST)
+        form = ChangeCategoryForm(request.POST)
         if form.is_valid():
+            issued_item = Item.objects.get(id = pk)
             new_category = Category.objects.get(id = request.POST['category_name'])
-            issued_item.category_name = new_category
-            issued_item.last_changer = request.user
-            issued_item.save(update_fields=["category_name"])
+            old_category = issued_item.category_name
+            if int(request.POST['amount']) > issued_item.amount or issued_item.category_name == new_category:
+                return redirect(request.META.get('HTTP_REFERER', '/'))
+            elif int(request.POST['amount']) == 0 or int(request.POST['amount']) == issued_item.amount:
+                if Item.objects.filter(name=issued_item.name, category_name=new_category).exists():
+                    new_item = Item.objects.get(name=issued_item.name, category_name=new_category)
+                    new_item.amount += issued_item.amount
+                    new_item.last_changer = request.user
+                    issued_item.delete()
+                    new_item.save()
+                else:
+                    issued_item.category_name = new_category
+                    issued_item.last_changer = request.user
+                    issued_item.save()
+                LogEntry.objects.log_action(
+                            user_id=issued_item.last_changer.id,
+                            content_type_id=ContentType.objects.get_for_model(Item).pk,
+                            object_id=issued_item.id,
+                            object_repr=issued_item.name,
+                            action_flag=CHANGE,
+                            change_message=f"replaced all from {old_category} to {new_category}")
+            else:
+                new_item, created = Item.objects.get_or_create(name=issued_item.name, category_name=new_category, defaults={"amount": 0, "last_changer": request.user})
+                new_item.amount += int(request.POST['amount'])
+                new_item.last_changer = request.user
+                issued_item.amount -= int(request.POST['amount'])
+                issued_item.last_changer = request.user
+                issued_item.save()
+                new_item.save()
+                LogEntry.objects.log_action(
+                            user_id=issued_item.last_changer.id,
+                            content_type_id=ContentType.objects.get_for_model(Item).pk,
+                            object_id=issued_item.id,
+                            object_repr=issued_item.name,
+                            action_flag=CHANGE,
+                            change_message=f"replaced {request.POST['amount']} from {old_category} to {new_category}")
+            
         return redirect(request.META.get('HTTP_REFERER', '/'))
