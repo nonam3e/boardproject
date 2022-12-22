@@ -24,6 +24,13 @@ html,body {
 .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
     background-color: #0d6c66 !important;
 }
+.link-primary {
+    color: #139e94 !important;
+    text-decoration: none;
+}
+.link-primary:hover {
+    text-decoration: underline;
+}
 
 @media(max-width: 767px){
     form { 

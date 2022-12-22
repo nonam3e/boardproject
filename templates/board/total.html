@@ -36,7 +36,7 @@
       {% for item in items %}
       <tr>
         <td scope="row">{{forloop.counter}}</td>
-        <td>{{item.name}}</td>
+        <td><a class="link-primary" href="{% url 'home' %}?name={{item.name}}"}>{{item.name}}</a></td>
         <td>{{item.total_amount}}</td>
         <td>{{item.last_changed}}</td>
       </tr>

@@ -3,7 +3,7 @@ from board.models import Item, Category
 
 
 class ItemFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(label="Name",lookup_expr="contains")
+    name = django_filters.CharFilter(label="Name")
     amount = django_filters.RangeFilter(label="Quantity")
     category_name = django_filters.ModelChoiceFilter(queryset=Category.objects.all(), label="Category")
     last_changed = django_filters.DateTimeFromToRangeFilter(label="Last Modified")
