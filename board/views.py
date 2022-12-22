@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
-from board.filters import ItemFilter
+from board.filters import ItemFilter, TotalFilter
 from django.contrib.auth.decorators import login_required
 from board.models import Item, Category
 from board.forms import ItemUpdateForm, ItemCreateForm, ChangeCategoryForm
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
-from django.views.generic.edit import CreateView
+from django.db.models import Sum, Max
 
 # Create your views here.
 @login_required
@@ -22,6 +22,15 @@ def home(request):
         'items': items, 'item_filters': item_filters, 'addform': addform, 'removeform': removeform, 'newform': newform,
         'categoryform': categoryform,
     })
+@login_required
+def show_total(request):
+    items = Item.objects.values('name').annotate(total_amount=Sum('amount')).annotate(last_changed=Max('last_changed')).order_by('-last_changed')
+    item_filters = TotalFilter(request.GET, queryset=items)
+    items = item_filters.qs
+    return render(request, 'board/total.html', {
+        'items': items, 'item_filters': item_filters
+    })
+
 
 @login_required
 def changes(request):
@@ -48,7 +57,7 @@ def add_to_stock(request, pk):
                         object_id=issued_item.id,
                         object_repr=issued_item.name,
                         action_flag=ADDITION,
-                        change_message=f"added {added_quantity} item(s)")
+                        change_message=f"added {added_quantity} item(s) to {issued_item.category_name.name}")
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
@@ -71,7 +80,7 @@ def remove_from_stock(request, pk):
                         object_id=issued_item.id,
                         object_repr=issued_item.name,
                         action_flag=DELETION,
-                        change_message=f"removed {added_quantity} item(s)")
+                        change_message=f"removed {added_quantity} item(s) from {issued_item.category_name.name}")
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
