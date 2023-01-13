@@ -13,7 +13,6 @@ class Item(models.Model):
     name = models.CharField(max_length = 150)
     amount = models.PositiveIntegerField(default=0)
     last_changed = models.DateTimeField(auto_now=True)
-    last_changer = models.ForeignKey(User, on_delete= models.SET_NULL, null=True)
 
     class Meta:
         constraints = [

@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from board.filters import ItemFilter, TotalFilter
 from django.contrib.auth.decorators import login_required
 from board.models import Item, Category
-from board.forms import ItemUpdateForm, ItemCreateForm, ChangeCategoryForm
+from board.forms import ItemUpdateForm, ItemCreateForm, ChangeCategoryForm, ItemRemoveForm
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Sum, Max
+from django.contrib import messages
 
 # Create your views here.
 @login_required
@@ -63,24 +64,25 @@ def add_to_stock(request, pk):
 @login_required
 def remove_from_stock(request, pk):
     issued_item = Item.objects.get(id = pk)
-    form = ItemUpdateForm(request.POST)
+    form = ItemRemoveForm(request.POST)
 
     if request.method == 'POST':
         print(request.POST)
         if form.is_valid():
             added_quantity = int(request.POST['amount'])
             if added_quantity > issued_item.amount:
-                return redirect(request.META.get('HTTP_REFERER', '/'))
-            issued_item.amount -= added_quantity
-            issued_item.last_changer = request.user
-            issued_item.save()
-            LogEntry.objects.log_action(
-                        user_id=request.user.id,
-                        content_type_id=ContentType.objects.get_for_model(Item).pk,
-                        object_id=issued_item.id,
-                        object_repr=issued_item.name,
-                        action_flag=DELETION,
-                        change_message=f"removed {added_quantity} item(s) from {issued_item.category_name.name}")
+                messages.warning(request, 'Input amount > existing amount')
+            else:
+                issued_item.amount -= added_quantity
+                issued_item.last_changer = request.user
+                issued_item.save()
+                LogEntry.objects.log_action(
+                            user_id=request.user.id,
+                            content_type_id=ContentType.objects.get_for_model(Item).pk,
+                            object_id=issued_item.id,
+                            object_repr=issued_item.name,
+                            action_flag=DELETION,
+                            change_message=f"removed {added_quantity} item(s) from {issued_item.category_name.name}")
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
@@ -112,6 +114,7 @@ def change_category(request, pk):
             new_category = Category.objects.get(id = request.POST['category_name'])
             old_category = issued_item.category_name
             if int(request.POST['amount']) > issued_item.amount or issued_item.category_name == new_category:
+                messages.warning(request, 'Input quantity > existing quantity')
                 return redirect(request.META.get('HTTP_REFERER', '/'))
             elif int(request.POST['amount']) == 0 or int(request.POST['amount']) == issued_item.amount:
                 if Item.objects.filter(name=issued_item.name, category_name=new_category).exists():

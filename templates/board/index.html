@@ -5,6 +5,18 @@
 
 <br></br>
 {% if user.is_authenticated%}
+
+{% if messages %}
+  <div class="d-flex flex-column">
+    {% for message in messages %}
+    <div class="alert alert-danger" role="alert">
+      <center><h3>{{message}}</h3></center>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
+<br></br>
+
 <div class = "container">
   <h1 class= "text-center ">ITEMS</h1>
   <br>
