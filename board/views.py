@@ -71,7 +71,7 @@ def remove_from_stock(request, pk):
         if form.is_valid():
             added_quantity = int(request.POST['amount'])
             if added_quantity > issued_item.amount:
-                messages.warning(request, 'Input amount > existing amount')
+                messages.warning(request, 'Input quantity > existing quantity')
             else:
                 issued_item.amount -= added_quantity
                 issued_item.last_changer = request.user
